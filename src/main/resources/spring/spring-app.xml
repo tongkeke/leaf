@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="     
+           http://www.springframework.org/schema/beans     
+           http://www.springframework.org/schema/beans/spring-beans-4.2.xsd     
+           http://www.springframework.org/schema/context     
+           http://www.springframework.org/schema/context/spring-context-4.2.xsd    
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<!-- 组件扫描/properties加载 -->
+	<context:component-scan base-package="com.eshopms.." />
+	<context:property-placeholder location="classpath:/config/datasource.properties" />
+
+	<!-- spring-heibenate整合 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialPoolSize" value="${datasource.initialPoolSize}" />
+		<property name="maxPoolSize" value="${datasource.maxPoolSize}" />
+		<property name="minPoolSize" value="${datasource.minPoolSize}" />
+		<property name="acquireIncrement" value="${datasource.acquireIncrement}" />
+		<property name="maxIdleTime" value="${datasource.maxIdleTime}" />
+		<property name="maxConnectionAge" value="${datasource.maxConnectionAge}" />
+		<property name="maxIdleTimeExcessConnections" value="${datasource.maxIdleTimeExcessConnections}" />
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 配置advice（通知） -->
+	<tx:advice id="advice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" isolation="READ_COMMITTED"
+				read-only="true" />
+			<tx:method name="search*" propagation="REQUIRED" isolation="READ_COMMITTED"
+				read-only="true" />
+			<tx:method name="query*" propagation="REQUIRED" isolation="READ_COMMITTED"
+				read-only="true" />
+			<tx:method name="is*" propagation="REQUIRED" isolation="READ_COMMITTED"
+				read-only="true" />
+			<tx:method name="*" propagation="REQUIRED" isolation="READ_COMMITTED"
+				read-only="false" />
+		</tx:attributes>
+	</tx:advice>
+	<!-- 配置AOP切面 -->
+	<aop:config>
+		<aop:pointcut id="pointcut"
+			expression="execution(* com.eshopms.service.*.*(..))" />
+		<aop:advisor advice-ref="advice" pointcut-ref="pointcut" />
+	</aop:config>
+	
+	
+</beans>
