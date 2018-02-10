@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.eshopms.util.MyException;
+
 /**
  * GenericHibernateDao 继承 HibernateDao，简单封装 HibernateTemplate 各项功能，
  * 简化基于Hibernate Dao 的编写。
@@ -174,17 +176,21 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
 	
 	@Override
 	public List<T> find(String queryString, int firstResult, int maxResults,
-			String[] fileds, boolean dsc) {
+			String[] fileds, boolean[] dscs) throws MyException {
+		if(dscs.length>fileds.length){
+			throw new MyException("参数不合符要求");
+		}
 		StringBuffer sb = new StringBuffer(queryString);
 		sb.append(" order by ");
 		for (int i = 0; i < fileds.length; i++) {
 			sb.append(fileds[i]);
+			if(i<dscs.length && dscs[i]){
+				sb.append(" DESC");
+			}
 			sb.append(",");
 		}
 		sb.deleteCharAt(sb.length()-1);
-		if(dsc){
-			sb.append(" DESC");
-		}
+		
 		Query query = getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createQuery(sb.toString());
 		return query.setFirstResult(firstResult).setMaxResults(maxResults)

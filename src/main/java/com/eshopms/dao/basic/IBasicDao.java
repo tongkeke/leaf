@@ -8,6 +8,8 @@ import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.criterion.DetachedCriteria;
 
+import com.eshopms.util.MyException;
+
 /**
  * 
  * @author 
@@ -79,7 +81,7 @@ public interface IBasicDao<T extends Serializable, PK extends Serializable> {
   	public List find(String queryString, int firstResult, int maxResults);
   	
   //使用HQL语句检索指定范围的记录值,order by多字段排序，可以选择升降序
-  	public List find(String queryString, int firstResult, int maxResults, String[] fileds , boolean dsc);
+  	public List find(String queryString, int firstResult, int maxResults, String[] fileds , boolean[] dscs) throws MyException;
   	
     // 使用带参数的HQL语句检索数据
     public List find(String queryString, Object[] values);
