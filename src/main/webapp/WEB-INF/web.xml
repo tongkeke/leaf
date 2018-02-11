@@ -8,37 +8,25 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:spring/spring-app.xml</param-value>
 	</context-param>
-	
-	<!-- development environment除此还有test and product environment,这里Tomcat会自动active dev environment-->
-	<context-param>  
-    <param-name>spring.profiles.active</param-name>  
-    <param-value>dev</param-value>  
-</context-param>  
-<context-param>  
-    <param-name>spring.profiles.default</param-name>  
-    <param-value>dev</param-value>  
-</context-param>
-<context-param>  
-    <param-name>spring.liveBeansView.mbeanDomain</param-name>  
-    <param-value>dev</param-value>  
-</context-param>
-	
+
+	<!-- development environment除此还有test and product environment,这里Tomcat会自动active 
+		dev environment -->
+	<context-param>
+		<param-name>spring.profiles.active</param-name>
+		<param-value>dev</param-value>
+	</context-param>
+	<context-param>
+		<param-name>spring.profiles.default</param-name>
+		<param-value>dev</param-value>
+	</context-param>
+	<context-param>
+		<param-name>spring.liveBeansView.mbeanDomain</param-name>
+		<param-value>dev</param-value>
+	</context-param>
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
-	<!-- 指定监听器加载的log4j配置文件 -->
-      <context-param>  
-          <param-name>log4jConfigLocation</param-name>  
-          <param-value>classpath:config/logback.properties</param-value>  
-      </context-param>  
-         
-    <listener>  
-          <listener-class>  
-              org.springframework.web.util.Log4jConfigListener  
-         </listener-class>  
-     </listener>
-
 
 	<welcome-file-list>
 		<welcome-file>/admin/login</welcome-file>
@@ -58,7 +46,6 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 		<servlet-name>dispatcherServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
 
 	<!-- 编码过滤器 -->
 	<filter>
