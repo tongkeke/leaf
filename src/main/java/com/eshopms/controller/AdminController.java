@@ -16,4 +16,6 @@ public class AdminController extends BaseController{
 		ModelAndView mv = new ModelAndView("login");
 		return mv;
 	}
+	
+	
 }

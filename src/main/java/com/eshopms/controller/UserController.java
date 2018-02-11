@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.eshopms.model.User;
 import com.eshopms.service.iface.IUserService;
 import com.eshopms.util.BaseController;
-import com.eshopms.util.LayuiTableJson;
+import com.eshopms.util.LayuiTableDataJson;
 import com.eshopms.util.Page;
 
 @Controller
@@ -42,12 +42,12 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "/listuser", method = { RequestMethod.GET })
 	@ResponseBody
-	public LayuiTableJson listUser(HttpServletRequest request) {
+	public LayuiTableDataJson listUser(HttpServletRequest request) {
 		Page page = new Page(this.getRequestVal("page", request),
 				this.getRequestVal("limit", request), userService.getModelCount());
 		List<User> query = userService.query(page.getFirstResult(),
 				page.getSize(), User.class);
-		LayuiTableJson json = new LayuiTableJson(0, "message", page.getCount(),
+		LayuiTableDataJson json = new LayuiTableDataJson(0, "message", page.getCount(),
 				query);
 		return json;
 	}

@@ -2,8 +2,8 @@ package com.eshopms.util;
 
 import java.util.List;
 
-
-public class LayuiTableJson {
+@SuppressWarnings("rawtypes")
+public class LayuiTableDataJson {
 	private int code;
 	private String msg;
 	private int count;
@@ -32,14 +32,14 @@ public class LayuiTableJson {
 	public void setData(List data) {
 		this.data = data;
 	}
-	public LayuiTableJson(int code, String msg, int count, List data) {
+	public LayuiTableDataJson(int code, String msg, int count, List data) {
 		super();
 		this.code = code;
 		this.msg = msg;
 		this.count = count;
 		this.data = data;
 	}
-	public LayuiTableJson() {
+	public LayuiTableDataJson() {
 		super();
 	}
 	

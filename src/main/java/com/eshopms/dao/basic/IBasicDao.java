@@ -1,4 +1,5 @@
 package com.eshopms.dao.basic;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -8,12 +9,11 @@ import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.criterion.DetachedCriteria;
 
-import com.eshopms.util.MyException;
-
 /**
  * 
  * @author 
  */
+@SuppressWarnings("rawtypes")
 public interface IBasicDao<T extends Serializable, PK extends Serializable> {
     // -------------------- 基本检索、增加、修改、删除操作 --------------------
 
@@ -75,33 +75,33 @@ public interface IBasicDao<T extends Serializable, PK extends Serializable> {
     public int bulkUpdate(String queryString, Object[] values);
 
     // 使用HQL语句检索数据
-    public List find(String queryString);
+    public List<T> find(String queryString);
   
     //使用HQL语句检索指定范围的记录值,自然排序
-  	public List find(String queryString, int firstResult, int maxResults);
+  	public List<T> find(String queryString, int firstResult, int maxResults);
   	
   //使用HQL语句检索指定范围的记录值,order by多字段排序，可以选择升降序
-  	public List find(String queryString, int firstResult, int maxResults, String[] fileds , boolean[] dscs) throws MyException;
+  	public List<T> find(String queryString, int firstResult, int maxResults, String[] fileds , boolean[] dscs);
   	
     // 使用带参数的HQL语句检索数据
-    public List find(String queryString, Object[] values);
+    public List<T> find(String queryString, Object[] values);
 
     // 使用带命名的参数的HQL语句检索数据
-    public List findByNamedParam(String queryString, String[] paramNames,
+    public List<T> findByNamedParam(String queryString, String[] paramNames,
             Object[] values);
 
     // 使用命名的HQL语句检索数据
-    public List findByNamedQuery(String queryName);
+    public List<T> findByNamedQuery(String queryName);
 
     // 使用带参数的命名HQL语句检索数据
-    public List findByNamedQuery(String queryName, Object[] values);
+    public List<T> findByNamedQuery(String queryName, Object[] values);
 
     // 使用带命名参数的命名HQL语句检索数据
-    public List findByNamedQueryAndNamedParam(String queryName,
+    public List<T> findByNamedQueryAndNamedParam(String queryName,
             String[] paramNames, Object[] values);
 
     // 使用HQL语句检索数据，返回 Iterator
-    public Iterator iterate(String queryString);
+	public Iterator iterate(String queryString);
 
     // 使用带参数HQL语句检索数据，返回 Iterator
     public Iterator iterate(String queryString, Object[] values);
@@ -118,10 +118,10 @@ public interface IBasicDao<T extends Serializable, PK extends Serializable> {
     public Criteria createCriteria();
 
     // 使用指定的检索标准检索数据
-    public List findByCriteria(DetachedCriteria criteria);
+    public List<T> findByCriteria(DetachedCriteria criteria);
 
     // 使用指定的检索标准检索数据，返回部分记录
-    public List findByCriteria(DetachedCriteria criteria, int firstResult,
+    public List<T> findByCriteria(DetachedCriteria criteria, int firstResult,
             int maxResults);
 
     // 使用指定的实体及属性检索（满足除主键外属性＝实体值）数据

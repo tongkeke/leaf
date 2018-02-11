@@ -5,8 +5,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
@@ -18,9 +18,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
-import org.springframework.stereotype.Repository;
 
-import com.eshopms.util.MyException;
+import com.eshopms.util.Message;
+import com.eshopms.util.exception.DAOException;
 
 /**
  * GenericHibernateDao 继承 HibernateDao，简单封装 HibernateTemplate 各项功能，
@@ -28,8 +28,9 @@ import com.eshopms.util.MyException;
  * 
  * @author lny
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class BasicDao<T extends Serializable, PK extends Serializable> implements IBasicDao<T, PK> {
+	private static Logger logger = Logger.getLogger(BasicDao.class);
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 	public HibernateTemplate getHibernateTemplate() {
@@ -44,9 +45,11 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
     private Class<T> entityClass;
 
     // 构造方法，根据实例类自动获取实体类类型
-    public BasicDao() {
+	@SuppressWarnings("unchecked")
+	public BasicDao() {
         this.entityClass = null;
-        Class c = getClass();
+		
+		Class c = getClass();
         Type t = c.getGenericSuperclass();
         if (t instanceof ParameterizedType) {
             Type[] p = ((ParameterizedType) t).getActualTypeArguments();
@@ -158,15 +161,22 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
     }
 
     // 使用HQL语句检索数据
-    public List find(String queryString) {
+    
+	@SuppressWarnings("unchecked")
+	public List find(String queryString) {
         return getHibernateTemplate().find(queryString);
     }
 
     // 使用带参数的HQL语句检索数据
-    public List find(String queryString, Object[] values) {
+    
+	@SuppressWarnings("unchecked")
+	public List find(String queryString, Object[] values) {
         return getHibernateTemplate().find(queryString, values);
     }
     //使用HQL语句检索指定范围的记录值,自然排序
+	
+	
+	@SuppressWarnings("unchecked")
 	public List find(String queryString, int firstResult, int maxResults) {
 		Query query = getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createQuery(queryString);
@@ -174,11 +184,14 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
 				.list();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<T> find(String queryString, int firstResult, int maxResults,
-			String[] fileds, boolean[] dscs) throws MyException {
+			String[] fileds, boolean[] dscs) {
 		if(dscs.length>fileds.length){
-			throw new MyException("参数不合符要求");
+			DAOException e = new DAOException("参数不符合要求","String[]与boolean[]在位置上一一对应");
+			logger.error(Message.contain(e), e);
+			throw e;
 		}
 		StringBuffer sb = new StringBuffer(queryString);
 		sb.append(" order by ");
@@ -198,24 +211,28 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
 	}
 	
     // 使用带命名的参数的HQL语句检索数据
-    public List findByNamedParam(String queryString, String[] paramNames,
+    @SuppressWarnings("unchecked")
+	public List findByNamedParam(String queryString, String[] paramNames,
             Object[] values) {
         return getHibernateTemplate().findByNamedParam(queryString, paramNames,
                 values);
     }
 
     // 使用命名的HQL语句检索数据
-    public List findByNamedQuery(String queryName) {
+    @SuppressWarnings("unchecked")
+	public List findByNamedQuery(String queryName) {
         return getHibernateTemplate().findByNamedQuery(queryName);
     }
 
     // 使用带参数的命名HQL语句检索数据
-    public List findByNamedQuery(String queryName, Object[] values) {
+    @SuppressWarnings("unchecked")
+	public List findByNamedQuery(String queryName, Object[] values) {
         return getHibernateTemplate().findByNamedQuery(queryName, values);
     }
 
     // 使用带命名参数的命名HQL语句检索数据
-    public List findByNamedQueryAndNamedParam(String queryName,
+    @SuppressWarnings("unchecked")
+	public List findByNamedQueryAndNamedParam(String queryName,
             String[] paramNames, Object[] values) {
         return getHibernateTemplate().findByNamedQueryAndNamedParam(queryName,
                 paramNames, values);
@@ -250,19 +267,22 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
     }
 
     // 检索满足标准的数据
-    public List findByCriteria(DetachedCriteria criteria) {
+    @SuppressWarnings("unchecked")
+	public List findByCriteria(DetachedCriteria criteria) {
         return getHibernateTemplate().findByCriteria(criteria);
     }
 
     // 检索满足标准的数据，返回指定范围的记录
-    public List findByCriteria(DetachedCriteria criteria, int firstResult,
+    @SuppressWarnings("unchecked")
+	public List findByCriteria(DetachedCriteria criteria, int firstResult,
             int maxResults) {
         return getHibernateTemplate().findByCriteria(criteria, firstResult,
                 maxResults);
     }
 
     // 使用指定的实体及属性检索（满足除主键外属性＝实体值）数据
-    public List<T> findEqualByEntity(T entity, String[] propertyNames) {
+    @SuppressWarnings("unchecked")
+	public List<T> findEqualByEntity(T entity, String[] propertyNames) {
         Criteria criteria = this.createCriteria();
         Example exam = Example.create(entity);
         exam.excludeZeroes();
@@ -285,7 +305,8 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
     }
 
     // 使用指定的实体及属性检索（满足属性 like 串实体值）数据
-    public List<T> findLikeByEntity(T entity, String[] propertyNames) {
+    @SuppressWarnings("unchecked")
+	public List<T> findLikeByEntity(T entity, String[] propertyNames) {
         Criteria criteria = this.createCriteria();
         for (String property : propertyNames) {
             try {
