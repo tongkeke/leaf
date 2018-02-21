@@ -34,7 +34,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/demo", method = { RequestMethod.GET })
 	@ResponseBody
 	public ModelAndView demo(HttpServletRequest request) {
-		List<User> query = userService.query("from User");
+		List<User> query = userService.query(User.class);
 		ModelAndView mv = new ModelAndView("demo");
 		mv.addObject("user", JSON.toJSONString(query));
 		return mv;

@@ -20,7 +20,13 @@
 		<!-- 正向生成数据库表(执行 drop table和create table语句)-->
 		<!-- <property name="hibernate.hbm2ddl.auto">create</property> -->
 		<!-- 指定映射文件，可映射多个映射文件-->
+		<mapping resource="com/eshopms/model/Admin.hbm.xml" />
+		<mapping resource="com/eshopms/model/AdminGroup.hbm.xml" />
+		<mapping resource="com/eshopms/model/AdminLimit.hbm.xml" />
+		<mapping resource="com/eshopms/model/AdminPower.hbm.xml" />
+		<mapping resource="com/eshopms/model/Menu.hbm.xml" />
 		<mapping resource="com/eshopms/model/User.hbm.xml" />
+		
 
 	</session-factory>
 

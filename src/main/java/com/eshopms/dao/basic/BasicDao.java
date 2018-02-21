@@ -5,6 +5,10 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -161,14 +165,38 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
     }
 
     // 使用HQL语句检索数据
-    
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
+	@Override
 	public List find(String queryString) {
-        return getHibernateTemplate().find(queryString);
+		return getHibernateTemplate().find(queryString);
+	}
+	@SuppressWarnings("unchecked")
+	public List find(Class<T> classs) {
+        return getHibernateTemplate().find("from "+classs.getName());
     }
 
-    // 使用带参数的HQL语句检索数据
-    
+    // 使用带参数的HQL语句检索数据,使用where字句
+	@SuppressWarnings("unchecked")
+	@Override
+	public List find(Class<T> classs, Map<String, String> kvs) {
+		StringBuffer sb = new StringBuffer("from "+classs.getName());
+		sb.append(" where 1=1 and ");
+		Set<Entry<String, String>> entrySet = kvs.entrySet();
+		for (Entry<String, String> entry : entrySet) {
+			String key = entry.getKey();
+			if(key==null || "".equals(key)){
+				DAOException e = new DAOException("参数有误","k-v--->Model[property=value]");
+				logger.error(Message.contain(e), e);
+				throw e;
+			}else{
+			  sb.append(key+"="+"'"+entry.getValue()+"'"+" and ");
+			}
+			
+		}
+		sb.delete(sb.length()-5,sb.length());
+		return getHibernateTemplate().find(sb.toString());
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List find(String queryString, Object[] values) {
         return getHibernateTemplate().find(queryString, values);
@@ -366,4 +394,7 @@ public class BasicDao<T extends Serializable, PK extends Serializable> implement
     public void flush() {
         getHibernateTemplate().flush();
     }
+
+	
+
 }

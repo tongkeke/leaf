@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
@@ -76,6 +77,10 @@ public interface IBasicDao<T extends Serializable, PK extends Serializable> {
 
     // 使用HQL语句检索数据
     public List<T> find(String queryString);
+    
+    public List<T> find(Class<T> classs);
+    
+    public List<T> find(Class<T> classs,Map<String,String> kvs);
   
     //使用HQL语句检索指定范围的记录值,自然排序
   	public List<T> find(String queryString, int firstResult, int maxResults);
@@ -147,5 +152,7 @@ public interface IBasicDao<T extends Serializable, PK extends Serializable> {
 
     // 强制立即更新缓冲数据到数据库（否则仅在事务提交时才更新）
     public void flush();
+
+	
 
 }

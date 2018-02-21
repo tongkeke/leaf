@@ -7,7 +7,7 @@ import com.eshopms.model.User;
 import com.eshopms.service.iface.IUserService;
 
 @Service("userService")
-public class UserService extends BasicService<User> implements IUserService {
+public class UserService extends BasicService<User,Integer> implements IUserService {
 
 	@Autowired
 	private UserDAO userDAO;
